@@ -149,3 +149,36 @@ kubectl delete ns monitoring
 ```bash
 eksctl delete cluster --name observability
 ```
+
+
+
+output:
+kubectl get svc -n monitoring
+NAME                                      TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+alertmanager-operated                     ClusterIP   None             <none>        9093/TCP,9094/TCP,9094/UDP   10h
+monitoring-grafana                        ClusterIP   10.100.253.42    <none>        80/TCP                       10h
+monitoring-kube-prometheus-alertmanager   ClusterIP   10.100.66.99     <none>        9093/TCP,8080/TCP            10h
+monitoring-kube-prometheus-operator       ClusterIP   10.100.186.255   <none>        443/TCP                      10h
+monitoring-kube-prometheus-prometheus     ClusterIP   10.100.114.192   <none>        9090/TCP,8080/TCP            10h
+monitoring-kube-state-metrics             ClusterIP   10.100.116.248   <none>        8080/TCP                     10h
+monitoring-prometheus-node-exporter       ClusterIP   10.100.53.206    <none>        9100/TCP                     10h
+prometheus-operated                       ClusterIP   None             <none>        9090/TCP                     10h
+
+
+kubectl get pods -n monitoring
+NAME                                                     READY   STATUS    RESTARTS   AGE
+alertmanager-monitoring-kube-prometheus-alertmanager-0   2/2     Running   0          10h
+alertmanager-monitoring-kube-prometheus-alertmanager-1   2/2     Running   0          10h
+monitoring-grafana-577868b7c8-5gmxt                      3/3     Running   0          10h
+monitoring-kube-prometheus-operator-66b9b9c54f-srd97     1/1     Running   0          10h
+monitoring-kube-state-metrics-7fc7c7469d-4txtp           1/1     Running   0          10h
+monitoring-prometheus-node-exporter-hz9wk                1/1     Running   0          10h
+monitoring-prometheus-node-exporter-z6zhk                1/1     Running   0          10h
+prometheus-monitoring-kube-prometheus-prometheus-0       2/2     Running   0          10h
+
+
+
+Exporters are like the add ons to get metric info
+Node exporter collects data such as cpu from all the nodes within the cluster every minute by reading the system files of each nodes
+kube state metrics exporter plugin collects all info from k8s API server such as pod and deployment status, how many times pod has crashed etc and prometheus will scrape the metrics from this exporter 
+To get application related info, developers of the app should write /metrics end point and prometheus using service discovery mechanism will scrape /metrics endpoint
